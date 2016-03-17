@@ -14,7 +14,7 @@ exports.up = function(knex, Promise) {
     table.string('type');
   })
 ]).then(function(){
-  return knex.schema.createTable('jobInstance', function(table){
+  return knex.schema.createTable('jobinstance', function(table){
     table.increments().primary();
     table.integer('creator_id').unsigned().references('id').inTable('users').onDelete('cascade');
     table.integer('shoveler_id').unsigned().references('id').inTable('users').onDelete('cascade');
@@ -26,7 +26,7 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('jobInstance').then(function(){
+  return knex.schema.dropTable('jobinstance').then(function(){
     return Promise.all([
       knex.schema.dropTable('jobs'),
       knex.schema.dropTable('users')
