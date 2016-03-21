@@ -4,15 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var cors = require('cors')
+var cors = require('cors');
+var jwt = require('jsonwebtoken');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var jobs = require('./routes/jobs');
 var instances = require('./routes/instances');
 var snow = require('./routes/snow');
+var auth = require('./routes/auth')
 
 var app = express();
+
+require('dotenv').load();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,11 +30,35 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next){
+  var token = req.get('Authorization');
+  if(token){
+    token = token.substring(7);
+    console.log(token);
+    jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded){
+      if(err){
+        // Hits this if it couldn't be verified.
+        console.error('err', err);
+        next();
+      } else {
+        console.log(decoded);
+        req.user = decoded;
+        next()
+      }
+    });
+  } else {
+    // No token Found
+    console.error('no token found')
+    next()
+  }
+})
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/jobs', jobs);
 app.use('/instances', instances);
 app.use('/snow', snow);
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
