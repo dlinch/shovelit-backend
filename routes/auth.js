@@ -18,44 +18,43 @@ passport.use(new FacebookStrategy({
   callbackURL : process.env.HOST +'/auth/facebook/callback'
 },
 function(accessToken, refreshToken, profile, done) {
-  console.log(profile);
-    var profile_id = profile.id[0].value;
-    findUserByID(ID).then(function(user) {
-      console.log('Existing User...');
-      console.log(user);
-      done(null, {
-        user: user,
-        accessToken: accessToken
-      });
-    }).catch(function(err) {
-      if(err.notFound) {
-        console.log('Creating User...');
-        createUser({
-          profile_id: profile_id,
-          first_name: profile.displayName[0],
-          shoveler: false,
-          home_address: null,
-          zipcode: null
-        }).then(function(user) {
-          done(null, {
-            user: user,
-            accessToken: accessToken
-          });
-        }).catch(function(err){
-          done(err);
-        });
-      } else {
-        console.log('Error...');
-        console.log(err);
-        done(err);
-      }
-    });
+  console.log('profile', profile);
+  done(null, profile);
+  //   var profile_id = profile.id[0].value;
+  //   findUserByID(profile_id).then(function(user) {
+  //     console.log('Existing User...');
+  //     console.log(user);
+  //     done(null, {
+  //       user: user
+  //     });
+  //   }).catch(function(err) {
+  //     if(err.notFound) {
+  //       console.log('Creating User...');
+  //       createUser({
+  //         profile_id: profile_id,
+  //         first_name: profile.displayName[0],
+  //         shoveler: false,
+  //         home_address: null,
+  //         zipcode: null
+  //       }).then(function(user) {
+  //         done(null, {
+  //           user: user
+  //         });
+  //       }).catch(function(err){
+  //         done(err);
+  //       });
+  //     } else {
+  //       console.log('Error...');
+  //       console.log(err);
+  //       done(err);
+  //     }
+  //   });
   }
 ));
 
 
 function findUserByID(id) {
-  return Users().where('id', id).first()
+  return Users().where('profile_id', id).first()
   .then(function(user){
       if(user) {
         return user;
@@ -91,15 +90,9 @@ function validPassword(p) {
 }
 
 
-function createToken(user, accessToken) {
+function createToken(user) {
   return new Promise(function(resolve, reject){
-    var data = {
-      user: user
-    }
-
-    if(accessToken) data.accessToken = accessToken;
-
-    jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: '1d' },
+    jwt.sign(user, process.env.TOKEN_SECRET, { expiresIn: '1d' },
       function(token) {
         resolve(token);
       });
@@ -113,8 +106,8 @@ router.get('/facebook',
 
 router.get('/facebook/callback', function(req, res, next) {
   passport.authenticate('facebook', function(err, userAndToken){
-    console.log('user', userAndToken.user);
-    createToken(userAndToken.user, userAndToken.accessToken).then(function(token){
+    console.log('user', userAndToken);
+    createToken({}).then(function(token){
       res.redirect(process.env.CLIENT_CALLBACK + '?token=' + token);
     });
   })(req, res, next);
