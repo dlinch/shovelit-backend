@@ -29,8 +29,8 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('shovelers').then(function(){
-    return knex.schema.dropTable('jobs').then(function(){
+  return knex.schema.dropTable('jobs').then(function(){
+    return knex.schema.dropTable('shovelers').then(function(){
       return knex.schema.dropTable('users');
     })
   })
