@@ -6,26 +6,23 @@ exports.seed = function(knex, Promise) {
     // Inserts seed entries
     return Promise.all([
       knex('jobinstance').insert({
-        id: 1,
-        creator_id: knex('users').where({id: 1}).select('id'),
-        shoveler_id: knex('users').where({id: 2}).select('id'),
-        time: '2004-10-19 10:23:54+02',
+        creator_id: knex('users').where({first_name: 'Derik'}).select('id'),
+        shoveler_id: knex('users').where({first_name: 'Ashley'}).select('id'),
+        time: 'Fri Mar 18 2016 12:30:58 GMT-0600 (MDT)',
         job_id: knex('jobs').where({id: 1}).select('id'),
         job_amount: 10.50
       }),
       knex('jobinstance').insert({
-        id: 2,
-        creator_id: knex('users').where({id: 2}).select('id'),
-        shoveler_id: knex('users').where({id: 3}).select('id'),
-        time: '2004-10-19 10:23:54+02',
+        creator_id: knex('users').where({first_name: 'Ashley'}).select('id'),
+        shoveler_id: knex('users').where({first_name: 'Bryce'}).select('id'),
+        time: 'Fri Mar 18 2016 12:30:58 GMT-0600 (MDT)',
         job_id: knex('jobs').where({id: 2}).select('id'),
         job_amount: 15
       }),
       knex('jobinstance').insert({
-        id: 3,
-        creator_id: knex('users').where({id: 3}).select('id'),
-        shoveler_id: knex('users').where({id: 2}).select('id'),
-        time: '2004-10-19 10:23:54+02',
+        creator_id: knex('users').where({first_name: 'Bryce'}).select('id'),
+        shoveler_id: knex('users').where({first_name: 'Ashley'}).select('id'),
+        time: 'Fri Mar 18 2016 12:30:58 GMT-0600 (MDT)',
         job_id: knex('jobs').where({id: 3}).select('id'),
         job_amount: 50.40
       }),

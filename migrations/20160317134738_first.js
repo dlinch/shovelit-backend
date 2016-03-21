@@ -18,7 +18,7 @@ exports.up = function(knex, Promise) {
     table.increments().primary();
     table.integer('creator_id').unsigned().references('id').inTable('users').onDelete('cascade');
     table.integer('shoveler_id').unsigned().references('id').inTable('users').onDelete('cascade');
-    table.timestamp('time');
+    table.string('time');
     table.integer('job_id').unsigned().references('id').inTable('jobs').onDelete('cascade');
     table.decimal('job_amount');
   })
