@@ -12,4 +12,18 @@ router.get('/', function(req, res, next) {
   })
 });
 
+router.post('/new', function(req, res, next){
+  Jobs().insert({
+    requester_id: knex('users').where({id: req.query.id}).select('id'),
+    shoveler_id: null,
+    type: 'house',
+    complete: false,
+    zipcode: 80021,
+    address: '8570 West 95th Drive Westminster CO',
+    time: Date(),
+  }).then(function(data){
+    res.json(data);
+  })
+})
+
 module.exports = router;
