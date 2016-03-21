@@ -14,6 +14,8 @@ router.get('/secret', function(req, res){
     });
   } else {
     res.status(401);
+    console.log('secret fail 401')
+
     res.json({
       message: 'Unauthorized.'
     });

@@ -22,6 +22,7 @@ router.post('/login', function(req, res){
     });
   } else {
     res.status(401);
+    console.log('auth fail 401')
     res.json({
       message: 'Unauthorized',
     });

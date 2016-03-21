@@ -2,14 +2,26 @@ var knex = require('../db/knex');
 
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
-  return knex('shovelers').del().then(function(){
+  return knex('jobs').del().then(function(){
     // Inserts seed entries
     return Promise.all([
-      knex('shovelers').insert({
-        user_id: knex('users').where({first_name: 'Derik'}).select('id')
+      knex('jobs').insert({
+        time: Date(),
+        requester_id: knex('users').where({id: 1}).select('id'),
+        shoveler_id: knex('users').where({id: 2}).select('id'),
+        complete: false,
+        type: 'house',
+        address: knex('users').where({id: 1}).select('home_address'),
+        zipcode: knex('users').where({id: 1}).select('zipcode'),
         }),
-      knex('shovelers').insert({
-        user_id: knex('users').where({first_name: 'David'}).select('id')
+      knex('jobs').insert({
+        time: Date(),
+        requester_id: knex('users').where({id: 2}).select('id'),
+        shoveler_id: knex('users').where({id: 1}).select('id'),
+        complete: false,
+        type: 'house',
+        address: knex('users').where({id: 2}).select('home_address'),
+        zipcode: knex('users').where({id: 2}).select('zipcode'),
         }),
     ])
   })
