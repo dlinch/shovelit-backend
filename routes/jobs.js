@@ -47,6 +47,7 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
   Jobs().whereNot(function(){
     this.whereNotNull('shoveler_id').orWhere({requester_id: req.params.userID, complete: true})
   }).select().then(function(data){
+    console.log(data)
     data.geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
     return data;
       })
