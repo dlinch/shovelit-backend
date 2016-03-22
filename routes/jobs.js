@@ -64,16 +64,16 @@ router.post('/new/:id', function(req, res, next){
 })
 
 
-// Updated a current job.
+// Update a current job.
 router.put('/update/:jobID', function(req, res, next){
   Jobs().where({
     id: req.params.id,
     complete: false
   }).update({
     time: Date(),
-    zipcode: req.query.zipcode,
+    zipcode: req.body.zipcode,
     address: req.body.address,
-    type: req.query.type,
+    type: req.body.property,
   }).then(function(data){
     res.json(data)
   }).catch(function(error){
