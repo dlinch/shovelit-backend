@@ -94,7 +94,17 @@ router.get('/myjobs/:userID', function(req, res, next) {
   })
 });
 
-// See
+
+// See all completed jobs a user has posted.
+router.get('/completedjobs/:userID', function(req, res, next){
+  Jobs().where({
+    requester_id: req.params.userID,
+    completed: true,
+    paid: false
+  }).select().then(function(data){
+    res.json(data);
+  })
+})
 
 // Post a new job. X
 router.post('/new/:id', function(req, res, next) {

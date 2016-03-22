@@ -13,7 +13,8 @@ var users = require('./routes/users');
 var jobs = require('./routes/jobs');
 var instances = require('./routes/instances');
 var snow = require('./routes/snow');
-var auth = require('./routes/auth')
+var auth = require('./routes/auth');
+var stripe = require('./routes/stripe');
 
 var app = express();
 
@@ -61,6 +62,7 @@ app.use('/jobs', jobs);
 app.use('/instances', instances);
 app.use('/snow', snow);
 app.use('/auth', auth);
+app.use('/stripe', stripe);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
