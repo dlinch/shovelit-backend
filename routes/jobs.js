@@ -39,7 +39,7 @@ router.get('/shoveledjobs/:userID', function(req, res, next){
 
 // See all jobs you have accepted
 router.get('/currentjobs/:userID', function(req, res, next){
-  Jobs.where({
+  Jobs().where({
     shoveler_id: req.params.userID,
     complete: false
   })
