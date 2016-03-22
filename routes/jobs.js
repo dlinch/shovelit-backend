@@ -12,9 +12,11 @@ function areaCodeFilter(Jobject){
   for(i=0; i<data.geocodeData.body.postalCodes.length; i++){
     for(j=0; j<Jobject.length; j++){
       if(Jobject[i]==geocodeData.body.postalCodes[i].postalCode){
+        console.log('filter true')
         return true;
       }
     }
+    console.log('filter false')
     return false;
   }
 }
@@ -55,6 +57,7 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
     return DoubleData;
       })
     .then(function(data){
+
     var returnArray = data.data.filter(areaCodeFilter)
     res.json(returnArray);
   }).catch(function(error){
