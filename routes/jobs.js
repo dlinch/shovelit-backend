@@ -66,10 +66,8 @@ router.post('/new/:id', function(req, res, next){
 
 // Update a current job.
 router.put('/update/:jobID', function(req, res, next){
-  Jobs().where({
-    id: req.params.id,
-    complete: false
-  }).update({
+  console.log(req.body.zipcode, req.body.address, req.body.property)
+  Jobs().where('id', req.params.jobID).update({
     time: Date(),
     zipcode: req.body.zipcode,
     address: req.body.address,
