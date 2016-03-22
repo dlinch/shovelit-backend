@@ -47,15 +47,16 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
   Jobs().whereNot(function(){
     this.whereNotNull('shoveler_id').orWhere({requester_id: req.params.userID, complete: true})
   }).select().then(function(data){
+
     console.log(data)
-    data.geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
-    return data;
+    var doubleData = {}
+    doubleData.data = data;
+    doubleData.geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
+    return DoubleData;
       })
     .then(function(data){
-    data.filter(areaCodeFilter)
-    delete data.geocodeData;
-    res.json(data);
-
+    var returnArray = data.data.filter(areaCodeFilter)
+    res.json(returnArray);
   }).catch(function(error){
     res.json(error)
   })
