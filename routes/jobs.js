@@ -8,8 +8,6 @@ var Jobs = function() {
   return knex('jobs')
 }
 
-var geocodeData;
-
 
 function requestPostalCodes(radius, postalcode) {
   if (!postalcode) {
@@ -23,9 +21,6 @@ function requestPostalCodes(radius, postalcode) {
   })
 }
 
-// router.get('/geocode/:radius', function(req, res, next){
-//
-// })
 
 // All jobs X
 router.get('/', function(req, res, next) {
@@ -42,17 +37,12 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
       complete: true
     })
   }).select().then(function(db) {
-    // console.log(db)
     requestPostalCodes(req.params.radius, req.params.zipcode).then(function(data) {
-      // console.log(data)
       geocodeData = data.body.postalCodes;
-      console.log(geocodeData.length);
 
-
+      //Filter By Area Code Function
       function areaCodeFilter(Jobject) {
-        console.log('geocode log')
         for (var i = 0; i < geocodeData.length; i++) {
-          console.log(i)
           if (Jobject.zipcode == geocodeData[i].postalCode) {
             return true;
           }
@@ -60,12 +50,7 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
         return false;
       }
 
-
-
-
-
       var returnArray = db.filter(areaCodeFilter)
-      console.log(returnArray)
       res.json(returnArray);
     })
   }).catch(function(error) {
