@@ -1,10 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
+var unirest = require('unirest');
 
 var Jobs = function() {
   return knex('jobs')
 }
+
+router.get('/geocode/:radius', function(req, res, next){
+  unirest.get('http://api.geonames.org/findNearbyPostalCodesJSON?postalcode=80205&country=US&radius='+req.params.radius+'&username='+process.env.GEONAME_USERNAME)
+  .then(function(data){
+    res.json(data)
+  }).catch(function(error){
+    res.json(error)
+  })
+})
 
 // All jobs X
 router.get('/', function(req, res, next){
@@ -37,7 +47,7 @@ router.get('/shoveledjobs/:userID', function(req, res, next){
   })
 })
 
-// See all jobs you have accepted
+// See all jobs you have accepted X
 router.get('/currentjobs/:userID', function(req, res, next){
   Jobs().where({
     shoveler_id: req.params.userID,
@@ -59,6 +69,8 @@ router.get('/myjobs/:userID', function(req, res, next) {
     res.json(error)
   })
 });
+
+// See
 
 // Post a new job. X
 router.post('/new/:id', function(req, res, next){
@@ -92,7 +104,7 @@ router.put('/update/:jobID', function(req, res, next){
 })
 
 
-// Mark a job as complete.
+// Mark a job as complete. X
 router.put('/complete/:jobID', function(req, res, next){
   Jobs().where('id', req.params.jobID).update({
     complete: true
@@ -103,7 +115,7 @@ router.put('/complete/:jobID', function(req, res, next){
   })
 })
 
-// Accept a job.
+// Accept a job. X
 router.put('/accept/:jobID/:userID', function(req, res, next){
   Jobs().where('id', req.params.jobID).update({
     shoveler_id: req.params.userID
@@ -114,7 +126,7 @@ router.put('/accept/:jobID/:userID', function(req, res, next){
   })
 })
 
-// Unaccept a job
+// Unaccept a job X
 router.put('/unaccept/:jobID', function(req, res, next){
   Jobs().where('id', req.params.jobID).update({
     shoveler_id: null
