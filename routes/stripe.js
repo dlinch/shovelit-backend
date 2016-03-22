@@ -7,11 +7,7 @@ var stripe = require('stripe')(process.env.STRIPE_KEY)
 
 router.get('/', function(req, res, next) {
   var stripeToken= req.body.stripeToken;
-  var charge = stripe.charges.create({{
-
-  }})
-
-  res.json('STRIPE IS LISTENING TO YOU');
+  var charge = stripe.charges.create({
   amount: 1000, // amount in cents, again
   currency: "usd",
   source: stripeToken,
