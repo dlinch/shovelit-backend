@@ -6,9 +6,9 @@ var Jobs = function() {
   return knex('jobs')
 }
 
-// See all jobs.
-router.get('/', function(req, res, next) {
-  Jobs().select().then(function(data){
+// See available jobs.
+router.get('/:userID', function(req, res, next) {
+  Jobs().whereNot('requester_id', req.params.userID).select().then(function(data){
     res.json(data);
   }).catch(function(error){
     res.json(error)
