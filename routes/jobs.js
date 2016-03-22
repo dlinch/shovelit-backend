@@ -8,6 +8,7 @@ var Jobs = function() {
   return knex('jobs')
 }
 
+var geocodeData;
 function areaCodeFilter(Jobject){
   for(i=0; i<data.geocodeData.body.postalCodes.length; i++){
     for(j=0; j<Jobject.length; j++){
@@ -49,16 +50,13 @@ router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
   Jobs().whereNot(function(){
     this.whereNotNull('shoveler_id').orWhere({requester_id: req.params.userID, complete: true})
   }).select().then(function(data){
-
     console.log(data)
-    var doubleData = {}
-    doubleData.data = data;
-    doubleData.geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
-    return DoubleData;
+    geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
+    console.log(geocodeData)
+    return data;
       })
     .then(function(data){
-
-    var returnArray = data.data.filter(areaCodeFilter)
+    var returnArray = data.filter(areaCodeFilter)
     res.json(returnArray);
   }).catch(function(error){
     res.json(error)
