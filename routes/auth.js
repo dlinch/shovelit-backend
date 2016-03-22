@@ -19,36 +19,34 @@ passport.use(new FacebookStrategy({
 },
 function(accessToken, refreshToken, profile, done) {
   console.log('profile', profile);
-  done(null, profile);
-  //   var profile_id = profile.id[0].value;
-  //   findUserByID(profile_id).then(function(user) {
-  //     console.log('Existing User...');
-  //     console.log(user);
-  //     done(null, {
-  //       user: user
-  //     });
-  //   }).catch(function(err) {
-  //     if(err.notFound) {
-  //       console.log('Creating User...');
-  //       createUser({
-  //         profile_id: profile_id,
-  //         first_name: profile.displayName[0],
-  //         shoveler: false,
-  //         home_address: null,
-  //         zipcode: null
-  //       }).then(function(user) {
-  //         done(null, {
-  //           user: user
-  //         });
-  //       }).catch(function(err){
-  //         done(err);
-  //       });
-  //     } else {
-  //       console.log('Error...');
-  //       console.log(err);
-  //       done(err);
-  //     }
-  //   });
+    var profile_id = profile.id;
+    findUserByID(profile_id).then(function(user) {
+      console.log('Existing User...');
+      console.log(user);
+      done(null, {
+        user: user
+      });
+    }).catch(function(err) {
+      if(err.notFound) {
+        console.log('Creating User...');
+        createUser({
+          profile_id: profile_id,
+          shoveler: false,
+          home_address: null,
+          zipcode: null
+        }).then(function(user) {
+          done(null, {
+            user: user
+          });
+        }).catch(function(err){
+          done(err);
+        });
+      } else {
+        console.log('Error...');
+        console.log(err);
+        done(err);
+      }
+    });
   }
 ));
 
@@ -105,11 +103,16 @@ router.get('/facebook',
 
 
 router.get('/facebook/callback', function(req, res, next) {
-  passport.authenticate('facebook', function(err, userAndToken){
-    console.log('user', userAndToken);
-    createToken({}).then(function(token){
-      res.redirect(process.env.CLIENT_CALLBACK + '?token=' + token);
+  passport.authenticate('facebook', function(err, user){
+    if(err){
+      console.log('error', err);
+      res.json(err)
+    } else {
+      console.log('user', user);
+      createToken(user).then(function(token){
+        res.redirect(process.env.CLIENT_CALLBACK + token);
     });
+    }
   })(req, res, next);
 });
 
