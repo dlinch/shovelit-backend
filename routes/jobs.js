@@ -6,9 +6,18 @@ var Jobs = function() {
   return knex('jobs')
 }
 
+
+router.get('/', function(req, res, next){
+  Jobs().select().then(function(data){
+    res.json(data)
+  })
+})
+
 // See available jobs.
-router.get('/:userID', function(req, res, next) {
-  Jobs().whereNot('requester_id', req.params.userID).select().then(function(data){
+router.get('/available/:userID', function(req, res, next) {
+  Jobs().whereNot(function(){
+    this.whereNull('shoveler_id').orWhereNot('requester_id', req.params.userID)
+  }).select().then(function(data){
     res.json(data);
   }).catch(function(error){
     res.json(error)
@@ -36,7 +45,7 @@ router.get('/currentjobs/:userID', function(req, res, next){
   })
 });
 
-// See all current jobs a user has posted.
+// See all current jobs a user has posted. X
 router.get('/myjobs/:userID', function(req, res, next) {
   Jobs().where({
     requester_id: req.params.userID,
@@ -48,7 +57,7 @@ router.get('/myjobs/:userID', function(req, res, next) {
   })
 });
 
-// Post a new job.
+// Post a new job. X
 router.post('/new/:id', function(req, res, next){
   Jobs().insert({
     requester_id: knex('users').where('id', req.params.id).select('id'),
@@ -64,7 +73,7 @@ router.post('/new/:id', function(req, res, next){
 })
 
 
-// Update a current job.
+// Update a current job. X
 router.put('/update/:jobID', function(req, res, next){
   console.log(req.body.zipcode, req.body.address, req.body.property)
   Jobs().where('id', req.params.jobID).update({
