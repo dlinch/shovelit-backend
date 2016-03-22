@@ -9,10 +9,8 @@ var Jobs = function() {
 
 router.get('/geocode/:radius', function(req, res, next){
   unirest.get('http://api.geonames.org/findNearbyPostalCodesJSON?postalcode=80205&country=US&radius='+req.params.radius+'&username='+process.env.GEONAME_USERNAME)
-  .then(function(data){
-    res.json(data)
-  }).catch(function(error){
-    res.json(error)
+  .end(function(response){
+    res.json(response)
   })
 })
 
