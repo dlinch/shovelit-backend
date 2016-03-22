@@ -2,16 +2,37 @@ var express = require('express');
 var router = express.Router();
 var knex = require('../db/knex');
 var unirest = require('unirest');
+require('dotenv').load();
 
 var Jobs = function() {
   return knex('jobs')
 }
 
-router.get('/geocode/:radius', function(req, res, next){
-  unirest.get('http://api.geonames.org/findNearbyPostalCodesJSON?postalcode=80205&country=US&radius='+req.params.radius+'&username='+process.env.GEONAME_USERNAME)
-  .end(function(response){
-    res.json(response)
+function areaCodeFilter(Jobject){
+  for(i=0; i<data.geocodeData.body.postalCodes.length; i++){
+    for(j=0; j<Jobject.length; j++){
+      if(Jobject[i]==geocodeData.body.postalCodes[i].postalCode){
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
+function requestPostalCodes(radius, postalcode){
+  if(!postalcode){
+    postalcode = 80205;
+  }
+  return new Promise(function(resolve, reject){
+    unirest.get('http://api.geonames.org/findNearbyPostalCodesJSON?postalcode='+postalcode+'&country=US&radius='+radius+'&username='+process.env.GEONAME_USERNAME)
+    .end(function(response){
+      resolve(response);
+    })
   })
+}
+
+router.get('/geocode/:radius', function(req, res, next){
+
 })
 
 // All jobs X
@@ -22,11 +43,21 @@ router.get('/', function(req, res, next){
 })
 
 // See available jobs. X
-router.get('/available/:userID', function(req, res, next) {
+router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
   Jobs().whereNot(function(){
     this.whereNotNull('shoveler_id').orWhere({requester_id: req.params.userID, complete: true})
   }).select().then(function(data){
+
+  })
+  .then(function(data){
+    data.geocodeData = requestPostalCodes(req.params.radius, req.params.zipcode)
+    return data;
+      })
+    .then(function(data){
+    data.filter(areaCodeFilter)
+    delete data.geocodeData;
     res.json(data);
+
   }).catch(function(error){
     res.json(error)
   })
