@@ -6,17 +6,17 @@ var Jobs = function() {
   return knex('jobs')
 }
 
-
+// All jobs X
 router.get('/', function(req, res, next){
   Jobs().select().then(function(data){
     res.json(data)
   })
 })
 
-// See available jobs.
+// See available jobs. X
 router.get('/available/:userID', function(req, res, next) {
   Jobs().whereNot(function(){
-    this.whereNotNull('shoveler_id').orWhere('requester_id', req.params.userID)
+    this.whereNotNull('shoveler_id').orWhere({requester_id: req.params.userID, complete: true})
   }).select().then(function(data){
     res.json(data);
   }).catch(function(error){
