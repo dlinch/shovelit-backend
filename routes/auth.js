@@ -83,9 +83,9 @@ function createUser(user) {
 }
 
 
-function validPassword(p) {
-  return typeof p !== 'undefined' && p !== null && typeof p == 'string' &&  p.trim() !== '';
-}
+// function validPassword(p) {
+//   return typeof p !== 'undefined' && p !== null && typeof p == 'string' &&  p.trim() !== '';
+// }
 
 
 function createToken(user) {

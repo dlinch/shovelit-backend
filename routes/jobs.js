@@ -17,7 +17,10 @@ router.get('/', function(req, res, next) {
 
 // See all jobs that you have shoveled.
 router.get('/shoveledjobs/:userID', function(req, res, next){
-  Jobs().where('shoveler_id', req.params.userID).select()
+  Jobs().where({
+    shoveler_id: req.params.userID,
+    complete: true
+  }).select()
   .then(function(data){
     res.json(data);
   }).catch(function(error){
@@ -25,7 +28,15 @@ router.get('/shoveledjobs/:userID', function(req, res, next){
   })
 })
 
-// See all current jobs you have posted.
+// See all jobs you have accepted
+router.get('/currentjobs/:userID', function(req, res, next){
+  Jobs.where({
+    shoveler_id: req.params.userID,
+    complete: false
+  })
+});
+
+// See all current jobs a user has posted.
 router.get('/myjobs/:userID', function(req, res, next) {
   Jobs().where({
     requester_id: req.params.userID,
@@ -38,19 +49,20 @@ router.get('/myjobs/:userID', function(req, res, next) {
 });
 
 // Post a new job.
-router.post('/new', function(req, res, next){
+router.post('/new/:id', function(req, res, next){
   Jobs().insert({
-    requester_id: knex('users').where('id', req.query.id).select('id'),
+    requester_id: knex('users').where('id', req.params.id).select('id'),
     shoveler_id: null,
-    type: req.query.type,
+    type: req.body.property,
     complete: false,
-    zipcode: req.query.zipcode,
+    zipcode: req.body.zipcode,
     address: req.body.address,
     time: Date(),
   }, 'id').then(function(data){
     res.json(data);
   })
 })
+
 
 // Updated a current job.
 router.put('/update/:jobID', function(req, res, next){
@@ -69,18 +81,6 @@ router.put('/update/:jobID', function(req, res, next){
   })
 })
 
-// Cancel a current job.
-router.delete('/delete/:jobID', function(req, res, next){
-  Jobs().where({
-    id: req.params.jobID,
-    complete: false
-  }).del()
-  .then(function(data){
-    res.json(data)
-  }).catch(function(error){
-    res.json(error)
-  })
-})
 
 // Mark a job as complete.
 router.put('/complete/:jobID', function(req, res, next){
@@ -103,5 +103,30 @@ router.put('/accept/:jobID/:userID', function(req, res, next){
     res.json(error)
   })
 })
+
+// Unaccept a job
+router.put('/unaccept/:jobID', function(req, res, next){
+  Jobs().where('id', req.params.jobID).update({
+    shoveler_id: null
+  }).then(function(data){
+    res.json(data)
+  }).catch(function(error){
+    res.json(error)
+  })
+})
+
+// Cancel a current job.
+router.delete('/delete/:jobID', function(req, res, next){
+  Jobs().where({
+    id: req.params.jobID,
+    complete: false
+  }).del()
+  .then(function(data){
+    res.json(data)
+  }).catch(function(error){
+    res.json(error)
+  })
+})
+
 
 module.exports = router;
