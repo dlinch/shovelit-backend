@@ -42,6 +42,9 @@ router.get('/currentjobs/:userID', function(req, res, next){
   Jobs().where({
     shoveler_id: req.params.userID,
     complete: false
+  }).select()
+  .then(function(data){
+    res.json(data)
   })
 });
 
