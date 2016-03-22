@@ -16,7 +16,7 @@ router.get('/', function(req, res, next){
 // See available jobs.
 router.get('/available/:userID', function(req, res, next) {
   Jobs().whereNot(function(){
-    this.whereNotNull('shoveler_id').orWhereNot('requester_id', req.params.userID)
+    this.whereNotNull('shoveler_id').orWhere('requester_id', req.params.userID)
   }).select().then(function(data){
     res.json(data);
   }).catch(function(error){
