@@ -15,8 +15,9 @@ router.post('/', function(req, res, next) {
       }, function(err, charge) {
         if (err && err.type === 'StripeCardError') {
           //Card declined.
+          res.json(error);
         }
-        res.json('YAY');
+        res.redirect('https://skyffel.co/#/dashboard');
       });
     });
     module.exports = router;
