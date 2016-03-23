@@ -18,7 +18,7 @@ router.post('/:jobID', function(req, res, next) {
   }).then(function(){
     var stripeToken = req.body.stripeToken;
     console.log(stripeToken);
-    
+
     var charge = stripe.charges.create({
       amount: 1000, // amount in cents, again
       currency: "usd",
@@ -27,7 +27,7 @@ router.post('/:jobID', function(req, res, next) {
     }, function(err, charge) {
       if (err && err.type === 'StripeCardError') {
         //Card declined.
-          res.status(400).sendJson(err)
+          res.status(400).json(err)
       }
     res.send('ok')
     });
