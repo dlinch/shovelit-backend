@@ -27,7 +27,7 @@ router.post('/:jobID', function(req, res, next) {
         //Card declined.
         res.json(err)
       }
-      res.redirect('https://skyffel.co/#/dashboard');
+    res.send('ok')
     });
 
 
