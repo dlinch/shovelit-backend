@@ -29,6 +29,13 @@ router.get('/', function(req, res, next) {
   })
 })
 
+// Get 1 Job
+router.get('/:jobID', function(req, res, next){
+  Jobs().where('id', req.params.jobID).select().first().then(function(job){
+    res.json(job)
+  })
+})
+
 // See available jobs. X
 router.get('/available/:userID/:radius/:zipcode', function(req, res, next) {
   Jobs().whereNot(function() {
