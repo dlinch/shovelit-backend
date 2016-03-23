@@ -25,9 +25,9 @@ router.post('/:jobID', function(req, res, next) {
     }, function(err, charge) {
       if (err && err.type === 'StripeCardError') {
         //Card declined.
-        
+
       }
-      res.redirect('https://skyffel.co/#/dashboard');
+      res.redirect('https://skyffel.co/');
     });
 
 
