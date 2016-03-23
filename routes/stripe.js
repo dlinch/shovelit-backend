@@ -28,8 +28,9 @@ router.post('/:jobID', function(req, res, next) {
       if (err && err.type === 'StripeCardError') {
         //Card declined.
           res.status(400).json(err)
+          return
       }
-    res.send('ok')
+    res.send(200);
     });
 
 
