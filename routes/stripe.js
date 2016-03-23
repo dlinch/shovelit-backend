@@ -16,14 +16,14 @@ router.post('/:jobID', function(req, res, next) {
   .update({
     paid: true
   }).then(function(){
-    var stripeToken = req.body.stripeToken;
+    var stripeToken = req.body.stripeToken.id;
     console.log(stripeToken);
 
     var charge = stripe.charges.create({
       amount: 1000, // amount in cents, again
       currency: "usd",
       source: stripeToken,
-      description: "Example Shoveling"
+      description: "Shoveling"
     }, function(err, charge) {
       if (err && err.type === 'StripeCardError') {
         //Card declined.
