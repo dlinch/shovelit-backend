@@ -99,7 +99,7 @@ router.get('/myjobs/:userID', function(req, res, next) {
 router.get('/completedjobs/:userID', function(req, res, next){
   Jobs().where({
     requester_id: req.params.userID,
-    completed: true,
+    complete: true,
     paid: false
   }).select().then(function(data){
     res.json(data);
